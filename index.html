@@ -1,17 +1,65 @@
-<!-- Alexis was here.
-Alexis was here again.
-Andrew was here too.
-i here's -->
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset='utf-8'>
-  </head>
-  <body>
-    <div>
-      <p>Alexis was here yet again! Muwahahahahaha!!</p>
-      <p>Alexis is getting tired of typing that she was here!!!</p>
-      <p>Andrew <span style="text-decoration: line-through">Alexis</span> was here yet again! Muwahahahahaha!!</p>
+
+<head>
+  <meta charset='utf-8'>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="background"></div>
+  <div id="page-wrapper">
+    <nav>
+      <a href="#home"><img id="logo" src="img/logo.png"></a>
+      <ul id="nav-items">
+        <li><a class="active" href="#home">Home</a></li>
+        <li><a href="#recyclable">Recyclable</a></li>
+        <li><a href="#play">Play</a></li>
+      </ul>
+    </nav>
+    <div id="content-wrapper">
+      <div id="mystery-item-container">
+        <img id="mystery-item" src="img/coffee.png" alt="coffee">
+        <img id="question-mark" src="img/question-mark.png" alt="question mark">
+      </div>
+      <div id="search-container">
+        <form method="GET" action="">
+          <div class="tb">
+            <div class="td">
+              <input id="search-field" type="text" name="item" placeholder="search item here (e.g. coffe cup)">
+            </div>
+            <div class="td" id="s-cover">
+              <button type="submit">
+                <div id="s-circle"></div>
+                <span></span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div id="bins-container">
+        <img id="bins" src="img/bins.png" alt="bins">
+      </div>
     </div>
-  </body>
+  </div>
+
+  <script>
+    // Set up click events on all navbar items
+    var navItems = document.getElementById("nav-items").getElementsByTagName("a");
+    for (let i = 0; i < navItems.length; i++) {
+      navItems[i].addEventListener("click", function (event) {
+        navItemActive(this);
+      })
+    }
+
+    // Remove the active class on the current active item 
+    // and apply active class on the element calling this method.
+    function navItemActive(navItem) {
+      document.getElementsByClassName("active")[0].classList.remove("active");
+      navItem.setAttribute("class", "active");
+    }
+
+  </script>
+</body>
+
 </html>
