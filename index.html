@@ -10,16 +10,18 @@
   <div id="background"></div>
   <div id="page-wrapper">
     <nav>
-      <a href="#home"><img id="logo" src="img/logo.png"></a>
+      <a id="nav-logo" href="#"><img id="logo" src="img/logo.png">
+        <p>Which Bin?</p>
+      </a>
       <ul id="nav-items">
-        <li><a class="active" href="#home">Home</a></li>
-        <li><a href="#recyclable">Recyclable</a></li>
-        <li><a href="#play">Play</a></li>
+        <li><a id="nav-home" class="active" href="#">Home</a></li>
+        <li><a id="nav-recyclable" href="#">Recyclable</a></li>
+        <li><a id="nav-play" href="#">Play</a></li>
       </ul>
     </nav>
     <div id="content-wrapper">
       <div id="mystery-item-container">
-        <img id="mystery-item" src="img/coffee.png" alt="coffee">
+        <img id="mystery-item" src="img/coffee.png">
         <img id="question-mark" src="img/question-mark.png" alt="question mark">
       </div>
       <div id="search-container">
@@ -43,22 +45,40 @@
     </div>
   </div>
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script>
-    // Set up click events on all navbar items
-    var navItems = document.getElementById("nav-items").getElementsByTagName("a");
-    for (let i = 0; i < navItems.length; i++) {
-      navItems[i].addEventListener("click", function (event) {
-        navItemActive(this);
-      })
-    }
+    $("nav a").on("click", function () {
+      navItemActive(this);
 
-    // Remove the active class on the current active item 
-    // and apply active class on the element calling this method.
+      switch (this.id) {
+        case "nav-logo":
+          homePageChage();
+          break;
+        case "nav-home":
+          homePageChage();
+          break;
+        case "nav-recyclable":
+          recyclablePageChage();
+          break;
+      }
+    });
+
     function navItemActive(navItem) {
-      document.getElementsByClassName("active")[0].classList.remove("active");
-      navItem.setAttribute("class", "active");
+      $(".active").removeClass("active");
+      if (navItem.id != "nav-logo") {
+        navItem.setAttribute("class", "active");
+      }
     }
 
+    function recyclablePageChage() {
+      $("#mystery-item").css("filter", "none");
+      $("#question-mark").css("display", "none");
+    };
+
+    function homePageChage() {
+      $("#mystery-item").css("filter", "brightness(0)");
+      $("#question-mark").css("display", "inline");
+    };
   </script>
 </body>
 
