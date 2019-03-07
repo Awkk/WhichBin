@@ -46,40 +46,8 @@
   </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script>
-    $("nav a").on("click", function () {
-      navItemActive(this);
+  <script type="text/javascript" src="index.js"></script>
 
-      switch (this.id) {
-        case "nav-logo":
-          homePageChage();
-          break;
-        case "nav-home":
-          homePageChage();
-          break;
-        case "nav-recyclable":
-          recyclablePageChage();
-          break;
-      }
-    });
-
-    function navItemActive(navItem) {
-      $(".active").removeClass("active");
-      if (navItem.id != "nav-logo") {
-        navItem.setAttribute("class", "active");
-      }
-    }
-
-    function recyclablePageChage() {
-      $("#mystery-item").css("filter", "none");
-      $("#question-mark").css("display", "none");
-    };
-
-    function homePageChage() {
-      $("#mystery-item").css("filter", "brightness(0)");
-      $("#question-mark").css("display", "inline");
-    };
-  </script>
 </body>
 
 </html>

@@ -80,8 +80,9 @@ nav ul li a {
 /****************** Mystery Item *******************/
 
 #mystery-item-container {
-  width: 150px;
-  height: 200px;
+  max-width: 200px;
+  width: 25%;
+  height: 220px;
   margin: 0 auto;
 }
 
@@ -96,12 +97,21 @@ nav ul li a {
 } */
 
 #question-mark {
-  width: 50px;
+  width: 30%;
   margin: 0 auto;
   filter: invert(100%);
   position: relative;
-  top: -105px;
-  left: 50px;
+  top: -53%;
+  left: 34%;
+}
+
+@keyframes reveal-item {
+  from {
+    filter: brightness(0);
+  }
+  to {
+    filter: none;
+  }
 }
 
 /******************** Search bar ********************/
@@ -137,7 +147,7 @@ form {
 }
 
 input[type="text"] {
-  width: 100%;
+  width: 95%;
   height: 45px;
   font-size: 20px;
   line-height: 1;
