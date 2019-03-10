@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css?family=Fredoka+One|Raleway:700');
+@import url('https://fonts.googleapis.com/css?family=Abel');
 body {
   margin: 0;
 }
 
-#background {
+/* #background {
   width: 100%;
   height: 100%;
   position: fixed;
@@ -11,7 +11,7 @@ body {
   background-size: cover;
   z-index: -1;
   filter: brightness(103%);
-}
+} */
 
 #page-wrapper {
   max-width: 1300px;
@@ -41,7 +41,8 @@ nav {
 nav p {
   display: inline-block;
   font-size: 28px;
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Abel', cursive;
+  font-weight: 900;
   color: black;
   margin: 60px 0 0 20px;
 }
@@ -60,7 +61,7 @@ nav ul li a:hover {
 }
 
 nav ul li a {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Abel', sans-serif;
   text-decoration: none;
   padding: 18px 15px;
   margin: 0 15px;
@@ -75,34 +76,45 @@ nav ul li a {
   padding-top: 40px;
 }
 
-/****************** Mystery Item *******************/
+/****************** Mystery Items *******************/
 
-#mystery-item-container {
-  max-width: 200px;
-  width: 25%;
-  height: 220px;
+#mystery-item-wrapper {
+  height: 230px;
+  width: 620px;
   margin: 0 auto;
-  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-#mystery-item {
-  width: 100%;
+#scrolling-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: hidden;
+  width: 500px;
+  height: 230px;
   margin: 0 auto;
-  filter: brightness(0);
 }
 
-#question-mark {
-  width: 30%;
-  /* margin: 0 auto; */
-  filter: invert(100%);
-  position: relative;
-  top: -53%;
-  left: 34%;
+.item {
+  flex: 0 0 auto;
+  width: 220px;
+}
+
+.mystery-item {
+  display: block;
+  width: 70%;
+  filter: brightness(15%);
+  margin: 0 auto;
+}
+
+.arrow img {
+  width: 30px;
+  cursor: pointer;
 }
 
 @keyframes reveal-item {
   from {
-    filter: brightness(0);
+    filter: brightness(15%);
   }
   to {
     filter: none;
@@ -125,14 +137,14 @@ nav ul li a {
   width: 50%;
   margin: 0 auto;
   background-color: white;
-  border-radius: 10px;
-  border: 1px solid black;
+  border-radius: 6px;
+  border: 2px solid rgb(170, 170, 170, 0.3);
   position: relative;
   margin-top: 20px;
 }
 
 input, button {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Abel', sans-serif;
   padding: 0;
   margin: 0;
   border: 0;
@@ -158,6 +170,7 @@ input[type="text"]::placeholder {
 #s-cover {
   width: 1px;
   padding-left: 35px;
+  zoom: 80%;
 }
 
 button {

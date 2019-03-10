@@ -33,36 +33,100 @@ function navItemActive(navItem) {
 
 /*************************** mysteryItem functions ******************************/
 
-// Set listener for mystery-item
-mysteryItemHoverListener();
+var scrollingWrapper = $("#scrolling-wrapper");
+let itemWidth = $(".item").width();
+var allItems = $(".mystery-item");
+let middleOffset = 80;
+var middleItemPosition = itemWidth * 2 + middleOffset;
+var middleItemIndex = 3;
 
-// Listener for revealing mystery-item when mouse over, backout again when mouse out
-function mysteryItemHoverListener() {
-  $("#mystery-item").hover(function () {
-    revealMysteryItem();
-  }, function () {
-    hideMysteryItem();
+// Move items to the forth one as default
+scrollingWrapper.scrollLeft(middleItemPosition);
+itemsRevealAndHide();
+
+// Set click listener on left and right arrow
+$("#left-arrow").on("click", function () {
+  moveToPerviousItem();
+});
+
+$("#right-arrow").on("click", function () {
+  moveToNextItem();
+});
+
+function moveToPerviousItem() {
+  middleItemIndex -= 1;
+  if (middleItemIndex == -2) {
+    middleItemIndex = allItems.length - 2;
+  };
+  itemsRevealAndHide();
+  lastItemToFirst();
+}
+
+function moveToNextItem() {
+  middleItemIndex += 1;
+  if (middleItemIndex == allItems.length) {
+    middleItemIndex = 0;
+  };
+  itemsRevealAndHide();
+  firstItemToLast();
+}
+
+function itemsRevealAndHide() {
+  var previousItemIndex = middleItemIndex - 1
+  var nextItemIndex = middleItemIndex + 1
+
+  if (previousItemIndex == -1) {
+    previousItemIndex = allItems.length - 1;
+  }
+  if (nextItemIndex == allItems.length) {
+    nextItemIndex = 0;
+  }
+
+  allItems.eq(previousItemIndex).css({
+    "animation": "none",
+    "filter": "brightness(15%)"
+  }).animate({
+    "width": "70%"
+  }, 100);
+  allItems.eq(middleItemIndex).css({
+    "animation": "reveal-item 1s",
+    "animation-fill-mode": "forwards"
+  }).animate({
+    "width": "100%"
+  }, 100);
+  allItems.eq(nextItemIndex).css({
+    "animation": "none",
+    "filter": "brightness(15%)"
+  }).animate({
+    "width": "70%"
+  }, 100);
+}
+
+function lastItemToFirst() {
+  var lastItem = $(".item").last().detach();
+  lastItem.css("width", "0");
+  scrollingWrapper.prepend(lastItem);
+  lastItem.animate({
+    width: "220"
+  }, 250);
+}
+
+function firstItemToLast() {
+  var firstItem = $(".item").first();
+
+  firstItem.animate({
+    width: "0"
+  }, 250, function () {
+    firstItem.detach();
+    firstItem.css("width", "220");
+    scrollingWrapper.append(firstItem);
   });
-};
-
-function revealMysteryItem() {
-  $("#mystery-item").css("animation", "reveal-item 1s");
-  $("#mystery-item").css("animation-fill-mode", "forwards");
-  $("#question-mark").hide();
-};
-
-function hideMysteryItem() {
-  $("#mystery-item").css("filter", "brightness(0)");
-  $("#mystery-item").css("animation", "none");
-  $("#question-mark").show();
-};
+}
 
 /******************** Home and Recyclable page switching functions *******************/
 
 // Change the layout to recyclable page
 function recyclablePageChage() {
-  $("#mystery-item").off("mouseenter mouseleave");
-  revealMysteryItem();
   moveMysteryItem_recyclable();
   moveSearchBar_recyclable();
   moveBins_recyclable();
@@ -70,10 +134,8 @@ function recyclablePageChage() {
 
 // Change the layout to home page
 function homePageChage() {
-  mysteryItemHoverListener();
-  hideMysteryItem();
-  moveSearchBar_home();
   moveMysteryItem_home();
+  moveSearchBar_home();
   moveBins_home()
 };
 
@@ -81,7 +143,6 @@ function homePageChage() {
 
 function moveSearchBar_home() {
   var searchBar = $("#search-container");
-  var offset = searchBar.offset();
 
   searchBar.animate({
     top: "0",

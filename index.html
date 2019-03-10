@@ -21,15 +21,25 @@
       </ul>
     </nav>
     <div id="content-wrapper">
-      <div id="mystery-item-container">
-        <img id="mystery-item" src="img/coffee.png">
-        <img id="question-mark" src="img/question-mark.png" alt="question mark">
+      <div id="mystery-item-wrapper">
+        <div id="left-arrow" class="arrow"><img src="img/left.png"></div>
+        <div id="scrolling-wrapper">
+          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+        </div>
+        <div id="right-arrow" class="arrow"><img src="img/right.png"></div>
       </div>
       <div id="search-container">
         <form method="GET" action="">
           <div class="tb">
             <div class="td">
-              <input id="search-field" type="text" name="item" placeholder="search here (e.g. coffe cup)">
+              <input id="search-field" type="text" name="item" placeholder="search recyclables">
             </div>
             <div class="td" id="s-cover">
               <button type="submit">
