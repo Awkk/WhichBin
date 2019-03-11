@@ -74,23 +74,25 @@ nav ul li a {
 
 #content-wrapper {
   padding-top: 40px;
+  position: relative;
 }
 
 /****************** Mystery Items *******************/
 
 #mystery-item-wrapper {
   height: 230px;
-  width: 620px;
+  width: 660px;
   margin: 0 auto;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 #scrolling-wrapper {
   display: flex;
   flex-wrap: nowrap;
   overflow: hidden;
-  width: 500px;
+  width: 540px;
   height: 230px;
   margin: 0 auto;
 }
