@@ -20,6 +20,9 @@ $("#nav-recyclable").on("click", function () {
   navItemActive($(this));
 })
 $("#nav-play").on("click", function () {
+  if (!$(this).hasClass("active"))
+    homePageChage();
+
   navItemActive($(this));
 })
 
@@ -41,6 +44,7 @@ function recyclablePageChage() {
   moveMysteryItem_recyclable();
   moveSearchBar_recyclable();
   moveBins_recyclable();
+  creatItemList();
 };
 
 // Change the layout to home page
@@ -124,6 +128,16 @@ function moveBins_recyclable() {
     left: "+=" + $("#page-wrapper").width() * 0.1,
     top: "+=" + ($("#page-wrapper").height() - offset.top - $bins.height() - 70)
   }, 600)
+}
+
+function creatItemList() {
+  var $itemList = $("item-list-container");
+  $itemList.css({
+    width: "20%",
+    height: "100%",
+    background: "green"
+  
+  })
 }
 
 /*************************** mysteryItem functions ******************************/
