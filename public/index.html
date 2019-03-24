@@ -5,6 +5,19 @@
   <meta charset='utf-8'>
   <link rel="stylesheet" type="text/css" href="index.css">
   <title>Which Bin?</title>
+  <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyAXjkY5TGmA8zoGBnwYHVKwWnszo7Q4GmM",
+      authDomain: "whichbin-2019.firebaseapp.com",
+      databaseURL: "https://whichbin-2019.firebaseio.com",
+      projectId: "whichbin-2019",
+      storageBucket: "whichbin-2019.appspot.com",
+      messagingSenderId: "972199466945"
+    };
+    firebase.initializeApp(config);
+  </script>
 </head>
 
 <body>
@@ -20,21 +33,19 @@
         <li><a id="nav-play" href="#">Play</a></li>
       </ul>
     </nav>
-    <div id="item-list-container">
-      
-    </div>
+    <div id="item-list-container"></div>
     <div id="content-wrapper">
       <div id="mystery-item-wrapper">
         <div id="left-arrow" class="arrow"><img src="img/left.png"></div>
         <div id="scrolling-wrapper">
-          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
-          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
-          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
-          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
-          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
-          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
-          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
-          <div class="item"><img class="mystery-item" src="img/coffee.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee_cup/coffee_cup.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee_cup/coffee_cup.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee_cup/coffee_cup.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee_cup/coffee_cup.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee_cup/coffee_cup.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee_cup/coffee_cup.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee_cup/coffee_cup.png"></div>
+          <div class="item"><img class="mystery-item" src="img/coffee_cup/coffee_cup.png"></div>
         </div>
         <div id="right-arrow" class="arrow"><img src="img/right.png"></div>
       </div>

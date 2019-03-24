@@ -27,13 +27,13 @@ $("#nav-play").on("click", function () {
 })
 
 // Set class .active to nav element that is selected
-function navItemActive(navItem) {
+function navItemActive($navItem) {
   $(".active").removeClass("active");
 
-  if (navItem.attr("id") == "nav-logo") {
+  if ($navItem.attr("id") == "nav-logo") {
     $("#nav-home").addClass("active");
   } else {
-    navItem.addClass("active");
+    $navItem.addClass("active");
   }
 };
 
@@ -42,16 +42,15 @@ function navItemActive(navItem) {
 // Change the layout to recyclable page
 function recyclablePageChage() {
   moveMysteryItem_recyclable();
-  moveSearchBar_recyclable();
+  moveSearchBar_recyclable(revealItemList);
   moveBins_recyclable();
-  creatItemList();
 };
 
 // Change the layout to home page
 function homePageChage() {
   moveMysteryItem_home();
-  moveSearchBar_home();
-  moveBins_home()
+  moveBins_home();
+  hideItemList(moveSearchBar_home);
 };
 
 /**************** Home and Recyclable page switching functions animations ****************/
@@ -59,6 +58,7 @@ function homePageChage() {
 var $searchBar = $("#search-container");
 var $mysteryItemsWrapper = $("#mystery-item-wrapper");
 var $bins = $("#bins-container");
+var $itemList = $("#item-list-container");
 var $midItemOffset;
 
 function moveSearchBar_home() {
@@ -67,10 +67,10 @@ function moveSearchBar_home() {
     left: "0",
     zoom: "1",
     width: "50%",
-  }, 600)
+  }, 400)
 };
 
-function moveSearchBar_recyclable() {
+function moveSearchBar_recyclable(event) {
   var offset = $searchBar.offset();
 
   $searchBar.animate({
@@ -78,7 +78,9 @@ function moveSearchBar_recyclable() {
     left: "+=" + (($(window).width() - $("#page-wrapper").width()) / 2 - offset.left - $searchBar.width() / 1.8),
     zoom: "0.7",
     width: "20%",
-  }, 600)
+  }, 400, () => {
+    event();
+  })
 };
 
 
@@ -110,7 +112,7 @@ function moveMysteryItem_recyclable() {
     });
     $item.animate({
       left: "+=" + $("#page-wrapper").width() * 0.1
-    }, 600)
+    }, 400)
   });
 };
 
@@ -118,7 +120,7 @@ function moveBins_home() {
   $bins.animate({
     left: "0",
     top: "0"
-  }, 600)
+  }, 400)
 }
 
 function moveBins_recyclable() {
@@ -126,19 +128,58 @@ function moveBins_recyclable() {
 
   $bins.animate({
     left: "+=" + $("#page-wrapper").width() * 0.1,
-    top: "+=" + ($("#page-wrapper").height() - offset.top - $bins.height() - 70)
-  }, 600)
+    // top: "+=" + ($("#page-wrapper").height() - offset.top - $bins.height())
+  }, 400)
+}
+
+function revealItemList() {
+  $itemList.slideDown(500);
+}
+
+function hideItemList(event) {
+  $itemList.slideUp(500, () => { event() });
+}
+
+/*************************** itemList functions **********************************/
+var fullItemList;
+
+retrieveItems();
+
+function retrieveItems() {
+  var dbRef = firebase.database().ref("recyclables");
+  var promise = dbRef.once("value", snap => {
+    fullItemList = snap.val();
+  })
+
+  promise.then(() => {
+    creatItemList()
+  })
 }
 
 function creatItemList() {
-  var $itemList = $("item-list-container");
-  $itemList.css({
-    width: "20%",
-    height: "100%",
-    background: "green"
-  
+  $itemList.hide();
+  $itemList.html("<ul></ul>");
+  var $unorderList = $("#item-list-container ul");
+
+  console.log(fullItemList);
+
+  for (var item in fullItemList) {
+    $unorderList.append(`<li id='${item}'>${item.split("_").join(" ")}</li>`);
+  }
+
+  let middleItemName = $allMysteryItems.eq(midItemIndex).attr("src").split("/")[1];
+  $("#" + middleItemName).addClass("currentItem");
+
+  setItemListListener();
+}
+
+function setItemListListener() {
+  $("#item-list-container li").on("click", function () {
+    $(".currentItem").removeClass("currentItem");
+    $(this).addClass("currentItem");
   })
 }
+
 
 /*************************** mysteryItem functions ******************************/
 
