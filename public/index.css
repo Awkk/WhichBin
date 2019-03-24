@@ -284,36 +284,43 @@ button span:before, button span:after {
 #item-list-container {
   position: absolute;
   top: 200px;
-  width: 250px;
+  width: 200px;
   height: 65%;
+  padding-left: 40px;
   z-index: 1;
-  overflow-y: auto;
+  overflow: hidden;
+}
+
+#item-list-container:hover {
+  overflow: auto;
 }
 
 #item-list-container ul {
   position: relative;
-  padding-left: 40px;
+  padding-left: 0px;
+  margin: 0;
   list-style-type: none;
   font-family: 'Abel', cursive;
   font-size: 20px;
 }
 
 #item-list-container ul li {
-  padding: 10px 0;
+  padding: 8px 0;
   cursor: pointer;
   text-transform: capitalize;
-  
 }
 
 #item-list-container ul li:hover {
   animation: itemPop 0.25s;
   animation-fill-mode: forwards;
+  color: rgb(24, 204, 0);
 }
 
 .currentItem {
   font-weight: 800;
   font-size: 26px;
   margin-left: 20px;
+  color: rgb(16, 136, 0);
 }
 
 @keyframes itemPop {

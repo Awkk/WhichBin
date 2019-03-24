@@ -59,14 +59,18 @@ var $searchBar = $("#search-container");
 var $mysteryItemsWrapper = $("#mystery-item-wrapper");
 var $bins = $("#bins-container");
 var $itemList = $("#item-list-container");
+var $pageWrapper = $("#page-wrapper");
 var $midItemOffset;
 
 function moveSearchBar_home() {
+  let horizontalMargin = ($pageWrapper.width()) / 4
+
   $searchBar.animate({
     top: "0",
     left: "0",
     zoom: "1",
     width: "50%",
+    margin: "0 " + horizontalMargin
   }, 400)
 };
 
@@ -75,9 +79,10 @@ function moveSearchBar_recyclable(event) {
 
   $searchBar.animate({
     top: "+=" + ($("nav").height() * 0.6 - offset.top),
-    left: "+=" + (($(window).width() - $("#page-wrapper").width()) / 2 - offset.left - $searchBar.width() / 1.8),
+    left: "+=20",
     zoom: "0.7",
-    width: "20%",
+    width: "300px",
+    margin: "0"
   }, 400, () => {
     event();
   })
@@ -85,23 +90,23 @@ function moveSearchBar_recyclable(event) {
 
 
 function moveMysteryItem_home() {
-  var $item = $("#item").fadeOut(400, function () {
+  var itemId = $(".currentItem").attr("id").split("-")[0];
+  var $item = $("#" + itemId).fadeOut(400, function () {
     $item.remove();
     $mysteryItemsWrapper.fadeIn(300);
   });
-
 };
 
 function moveMysteryItem_recyclable() {
   $midItemOffset = $allMysteryItems.eq(midItemIndex).offset();
   var $item = $allMysteryItems.eq(midItemIndex).clone();
-  $item.attr("id", "item");
+  $item.attr("id", `${$item.attr("src").split("/")[1]}`);
   $item.css({
     "position": "absolute",
     "width": "220px",
     "animation": "none",
     "filter": "none",
-    "left": $midItemOffset.left - ($(window).width() - $("#page-wrapper").width()) / 2
+    "left": $midItemOffset.left - ($(window).width() - $pageWrapper.width()) / 2
   })
   $("#content-wrapper").prepend($item);
 
@@ -111,7 +116,7 @@ function moveMysteryItem_recyclable() {
       "left": "0"
     });
     $item.animate({
-      left: "+=" + $("#page-wrapper").width() * 0.1
+      left: "+=" + $pageWrapper.width() * 0.1
     }, 400)
   });
 };
@@ -126,10 +131,15 @@ function moveBins_home() {
 function moveBins_recyclable() {
   var offset = $bins.offset();
 
+  let verticalMovement = $pageWrapper.height() - offset.top - $bins.height() - 30;
+  if (verticalMovement < 0) {
+    verticalMovement = 100;
+  }
+
   $bins.animate({
-    left: "+=" + $("#page-wrapper").width() * 0.1,
-    // top: "+=" + ($("#page-wrapper").height() - offset.top - $bins.height())
-  }, 400)
+    left: "+=" + $pageWrapper.width() * 0.1,
+    top: "+=" + verticalMovement
+  }, 500)
 }
 
 function revealItemList() {
@@ -140,7 +150,7 @@ function hideItemList(event) {
   $itemList.slideUp(500, () => { event() });
 }
 
-/*************************** itemList functions **********************************/
+/*************************** Item List functions **********************************/
 var fullItemList;
 
 retrieveItems();
@@ -164,11 +174,11 @@ function creatItemList() {
   console.log(fullItemList);
 
   for (var item in fullItemList) {
-    $unorderList.append(`<li id='${item}'>${item.split("_").join(" ")}</li>`);
+    $unorderList.append(`<li id='${item}-list'>${item.split("_").join(" ")}</li>`);
   }
 
   let middleItemName = $allMysteryItems.eq(midItemIndex).attr("src").split("/")[1];
-  $("#" + middleItemName).addClass("currentItem");
+  $("#" + middleItemName + "-list").addClass("currentItem");
 
   setItemListListener();
 }
