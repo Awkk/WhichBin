@@ -41,14 +41,14 @@ function navItemActive($navItem) {
 
 // Change the layout to recyclable page
 function recyclablePageChage() {
-  moveMysteryItem_recyclable();
+  moveItemShowcase_recyclable();
   moveSearchBar_recyclable(revealItemList);
   moveBins_recyclable();
 };
 
 // Change the layout to home page
 function homePageChage() {
-  moveMysteryItem_home();
+  moveItemShowcase_home();
   moveBins_home();
   hideItemList(moveSearchBar_home);
 };
@@ -62,6 +62,7 @@ var $itemList = $("#item-list-container");
 var $pageWrapper = $("#page-wrapper");
 var $midItemOffset;
 
+// Move search bar to home page position
 function moveSearchBar_home() {
   let horizontalMargin = ($pageWrapper.width()) / 4
 
@@ -74,6 +75,7 @@ function moveSearchBar_home() {
   }, 400)
 };
 
+// Move search bar to recyclable page position
 function moveSearchBar_recyclable(event) {
   var offset = $searchBar.offset();
 
@@ -88,8 +90,8 @@ function moveSearchBar_recyclable(event) {
   })
 };
 
-
-function moveMysteryItem_home() {
+// Move item showcase to home page position
+function moveItemShowcase_home() {
   var itemId = $(".currentItem").attr("id").split("-")[0];
   var $item = $("#" + itemId).fadeOut(400, function () {
     $item.remove();
@@ -97,8 +99,11 @@ function moveMysteryItem_home() {
   });
 };
 
-function moveMysteryItem_recyclable() {
+// Move item showcase to recyclable page position
+function moveItemShowcase_recyclable() {
   $midItemOffset = $allMysteryItems.eq(midItemIndex).offset();
+
+  // Clone the item in the middle of item showcase, cover it on the same position
   var $item = $allMysteryItems.eq(midItemIndex).clone();
   $item.attr("id", `${$item.attr("src").split("/")[1]}`);
   $item.css({
@@ -110,6 +115,7 @@ function moveMysteryItem_recyclable() {
   })
   $("#content-wrapper").prepend($item);
 
+  // Hide the item showcase and move the cloned item
   $mysteryItemsWrapper.fadeOut("100", function () {
     $item.css({
       "position": "relative",
@@ -121,6 +127,7 @@ function moveMysteryItem_recyclable() {
   });
 };
 
+// Move bins to home page position
 function moveBins_home() {
   $bins.animate({
     left: "0",
@@ -128,6 +135,7 @@ function moveBins_home() {
   }, 400)
 }
 
+// Move bins to recyclable page position
 function moveBins_recyclable() {
   var offset = $bins.offset();
 
@@ -142,10 +150,12 @@ function moveBins_recyclable() {
   }, 500)
 }
 
+// Show item list on the side
 function revealItemList() {
   $itemList.slideDown(500);
 }
 
+// Hide item list on the side
 function hideItemList(event) {
   $itemList.slideUp(500, () => { event() });
 }
@@ -153,19 +163,18 @@ function hideItemList(event) {
 /*************************** Item List functions **********************************/
 var fullItemList;
 
+// Get the item list ready when page loaded
 retrieveItems();
 
+// Get all items from firebase create the item list
 function retrieveItems() {
-  var dbRef = firebase.database().ref("recyclables");
-  var promise = dbRef.once("value", snap => {
+  firebase.database().ref("recyclables").once("value", snap => {
     fullItemList = snap.val();
-  })
-
-  promise.then(() => {
     creatItemList()
   })
 }
 
+// Append items to the item list as html elements
 function creatItemList() {
   $itemList.hide();
   $itemList.html("<ul></ul>");
@@ -183,6 +192,7 @@ function creatItemList() {
   setItemListListener();
 }
 
+// Set on click listener for each item in the list
 function setItemListListener() {
   $("#item-list-container li").on("click", function () {
     $(".currentItem").removeClass("currentItem");
@@ -203,16 +213,18 @@ var midItemIndex = 3;
 $scrollingWrapper.scrollLeft(itemWidth * 2 + middleOffset);
 itemsRevealAndHide();
 
-// Set click listener on left and right arrow
+// Set click listener on left arrow
 $("#left-arrow").on("click", function () {
-  moveToPerviousItem();
+  moveToPreviousItem();
 });
 
+// Set click listener on right arrow
 $("#right-arrow").on("click", function () {
   moveToNextItem();
 });
 
-function moveToPerviousItem() {
+// Move the middle item of item showcase to the previous one
+function moveToPreviousItem() {
   midItemIndex -= 1;
   if (midItemIndex == -2) {
     midItemIndex = $allMysteryItems.length - 2;
@@ -221,6 +233,7 @@ function moveToPerviousItem() {
   lastItemToFirst();
 }
 
+// Move the middle item of item showcase to the next one
 function moveToNextItem() {
   midItemIndex += 1;
   if (midItemIndex == $allMysteryItems.length) {
@@ -230,6 +243,7 @@ function moveToNextItem() {
   firstItemToLast();
 }
 
+// Reveal and resize the middle item and the items next to it
 function itemsRevealAndHide() {
   var previousItemIndex = midItemIndex - 1
   var nextItemIndex = midItemIndex + 1
@@ -261,6 +275,7 @@ function itemsRevealAndHide() {
   }, 250);
 }
 
+// Move the last item in item showcase to the start of the list
 function lastItemToFirst() {
   var $lastItem = $(".item").last().detach();
 
@@ -271,6 +286,7 @@ function lastItemToFirst() {
   }, 250);
 }
 
+// Move the first item in item showcase to the end of the list
 function firstItemToLast() {
   var $firstItem = $(".item").first();
 

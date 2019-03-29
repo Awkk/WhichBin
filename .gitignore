@@ -1,2 +1,6 @@
 .DS_Store
 .vscode
+.firebase
+.firevaserc
+database.rules.json
+firebase.json
