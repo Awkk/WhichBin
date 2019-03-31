@@ -49,8 +49,8 @@ function recyclablePageChage() {
 // Change the layout to home page
 function homePageChage() {
   moveItemShowcase_home();
-  moveBins_home();
   hideItemList(moveSearchBar_home);
+  moveBins_home();
 };
 
 /**************** Home and Recyclable page switching functions animations ****************/
@@ -60,7 +60,7 @@ var $mysteryItemsWrapper = $("#mystery-item-wrapper");
 var $bins = $("#bins-container");
 var $itemList = $("#item-list-container");
 var $pageWrapper = $("#page-wrapper");
-var $midItemOffset;
+var $midItemPosition;
 
 // Move search bar to home page position
 function moveSearchBar_home() {
@@ -76,7 +76,7 @@ function moveSearchBar_home() {
 };
 
 // Move search bar to recyclable page position
-function moveSearchBar_recyclable(event) {
+function moveSearchBar_recyclable(callback) {
   var offset = $searchBar.offset();
 
   $searchBar.animate({
@@ -86,45 +86,45 @@ function moveSearchBar_recyclable(event) {
     width: "300px",
     margin: "0"
   }, 400, () => {
-    event();
+
+    callback();
   })
 };
 
 // Move item showcase to home page position
 function moveItemShowcase_home() {
-  var itemId = $(".currentItem").attr("id").split("-")[0];
-  var $item = $("#" + itemId).fadeOut(400, function () {
+  var $item = $(".currentItem").fadeOut(400, function () {
     $item.remove();
-    $mysteryItemsWrapper.fadeIn(300);
+    $mysteryItemsWrapper.children().not('.currentItem').fadeIn(400);
   });
 };
 
 // Move item showcase to recyclable page position
 function moveItemShowcase_recyclable() {
-  $midItemOffset = $allMysteryItems.eq(midItemIndex).offset();
+  $midItemPosition = $allMysteryItems.eq(midItemIndex).position();
 
   // Clone the item in the middle of item showcase, cover it on the same position
   var $item = $allMysteryItems.eq(midItemIndex).clone();
   $item.attr("id", `${$item.attr("src").split("/")[1]}`);
+  $item.removeClass('mystery-item');
+  $item.addClass('currentItem')
   $item.css({
     "position": "absolute",
     "width": "220px",
     "animation": "none",
     "filter": "none",
-    "left": $midItemOffset.left - ($(window).width() - $pageWrapper.width()) / 2
+    "top": $midItemPosition.top,
+    "left": $midItemPosition.left
   })
-  $("#content-wrapper").prepend($item);
+  $mysteryItemsWrapper.prepend($item);
 
   // Hide the item showcase and move the cloned item
-  $mysteryItemsWrapper.fadeOut("100", function () {
-    $item.css({
-      "position": "relative",
-      "left": "0"
-    });
-    $item.animate({
-      left: "+=" + $pageWrapper.width() * 0.1
-    }, 400)
-  });
+  $mysteryItemsWrapper.children().not('.currentItem').hide();
+
+  $item.animate({
+    left: "+=" + $pageWrapper.width() * 0.1,
+    width: "180px"
+  }, 600)
 };
 
 // Move bins to home page position
@@ -139,7 +139,8 @@ function moveBins_home() {
 function moveBins_recyclable() {
   var offset = $bins.offset();
 
-  let verticalMovement = $pageWrapper.height() - offset.top - $bins.height() - 30;
+  let verticalMovement = $(window).height() - offset.top - $bins.height() - 50;
+
   if (verticalMovement < 0) {
     verticalMovement = 100;
   }
@@ -156,8 +157,8 @@ function revealItemList() {
 }
 
 // Hide item list on the side
-function hideItemList(event) {
-  $itemList.slideUp(500, () => { event() });
+function hideItemList(callback) {
+  $itemList.slideUp(500, () => { callback() });
 }
 
 /*************************** Item List functions **********************************/
@@ -187,7 +188,7 @@ function creatItemList() {
   }
 
   let middleItemName = $allMysteryItems.eq(midItemIndex).attr("src").split("/")[1];
-  $("#" + middleItemName + "-list").addClass("currentItem");
+  $("#" + middleItemName + "-list").addClass("currentSelectedItem");
 
   setItemListListener();
 }
@@ -195,8 +196,8 @@ function creatItemList() {
 // Set on click listener for each item in the list
 function setItemListListener() {
   $("#item-list-container li").on("click", function () {
-    $(".currentItem").removeClass("currentItem");
-    $(this).addClass("currentItem");
+    $(".currentSelectedItem").removeClass("currentSelectedItem");
+    $(this).addClass("currentSelectedItem");
   })
 }
 
