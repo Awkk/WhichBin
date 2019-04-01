@@ -1,29 +1,47 @@
 /*************************** Navbar functions ******************************/
+var pageChanging = false;
+const pageChangingDelay = 800;
 
 // Set click event listener for nav elements
 $("#nav-logo").on("click", function () {
-  if (!$(this).hasClass("active"))
+  if (!$(this).hasClass("active") && !pageChanging) {
+    pageChanging = true
     homePageChage();
-
-  navItemActive($(this));
+    navItemActive($(this));
+    setTimeout(function () {
+      pageChanging = false;
+    }, pageChangingDelay);
+  }
 })
 $("#nav-home").on("click", function () {
-  if (!$(this).hasClass("active"))
+  if (!$(this).hasClass("active") && !pageChanging) {
+    pageChanging = true
     homePageChage();
-
-  navItemActive($(this));
+    navItemActive($(this));
+    setTimeout(function () {
+      pageChanging = false;
+    }, pageChangingDelay);
+  }
 })
 $("#nav-recyclable").on("click", function () {
-  if (!$(this).hasClass("active"))
+  if (!$(this).hasClass("active") && !pageChanging) {
+    pageChanging = true
     recyclablePageChage();
-
-  navItemActive($(this));
+    navItemActive($(this));
+    setTimeout(function () {
+      pageChanging = false;
+    }, pageChangingDelay);
+  }
 })
 $("#nav-play").on("click", function () {
-  if (!$(this).hasClass("active"))
+  if (!$(this).hasClass("active") && !pageChanging) {
+    pageChanging = true
     homePageChage();
-
-  navItemActive($(this));
+    navItemActive($(this));
+    setTimeout(function () {
+      pageChanging = false;
+    }, pageChangingDelay);
+  }
 })
 
 // Set class .active to nav element that is selected
@@ -123,8 +141,9 @@ function moveItemShowcase_recyclable() {
 
   $item.animate({
     left: "+=" + $pageWrapper.width() * 0.1,
+    top: "+=50px",
     width: "180px"
-  }, 600)
+  }, 500)
 };
 
 // Move bins to home page position
@@ -153,12 +172,12 @@ function moveBins_recyclable() {
 
 // Show item list on the side
 function revealItemList() {
-  $itemList.slideDown(500);
+  $itemList.slideDown(400);
 }
 
 // Hide item list on the side
 function hideItemList(callback) {
-  $itemList.slideUp(500, () => { callback() });
+  $itemList.slideUp(400, () => { callback() });
 }
 
 /*************************** Item List functions **********************************/
@@ -215,14 +234,10 @@ $scrollingWrapper.scrollLeft(itemWidth * 2 + middleOffset);
 itemsRevealAndHide();
 
 // Set click listener on left arrow
-$("#left-arrow").on("click", function () {
-  moveToPreviousItem();
-});
+$("#left-arrow").on("click", throttle(moveToPreviousItem, 250));
 
 // Set click listener on right arrow
-$("#right-arrow").on("click", function () {
-  moveToNextItem();
-});
+$("#right-arrow").on("click", throttle(moveToNextItem, 250));
 
 // Move the middle item of item showcase to the previous one
 function moveToPreviousItem() {
@@ -298,4 +313,17 @@ function firstItemToLast() {
     $firstItem.css("width", "220");
     $scrollingWrapper.append($firstItem);
   });
+}
+
+function throttle(callback, limit) {
+  var wait = false;
+  return function () {
+    if (!wait) {
+      callback.call();
+      wait = true;
+      setTimeout(function () {
+        wait = false;
+      }, limit);
+    }
+  }
 }
