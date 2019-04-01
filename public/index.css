@@ -268,14 +268,19 @@ button span:before, button span:after {
 /******************** Bins **************************/
 
 #bins-container {
-  max-width: 500px;
-  width: 50%;
+  width: 500px;
   margin: 0 auto;
   padding-top: 50px;
   position: relative;
+  display: flex;
+  justify-content: space-between;
 }
 
-#bins {
+.bin {
+  width: 125px;
+}
+
+.bin img {
   width: 100%;
 }
 

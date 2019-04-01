@@ -8,7 +8,7 @@ $("#nav-logo").on("click", function () {
     pageChanging = true
     homePageChage();
     navItemActive($(this));
-    setTimeout(function () {
+    setTimeout(() => {
       pageChanging = false;
     }, pageChangingDelay);
   }
@@ -18,7 +18,7 @@ $("#nav-home").on("click", function () {
     pageChanging = true
     homePageChage();
     navItemActive($(this));
-    setTimeout(function () {
+    setTimeout(() => {
       pageChanging = false;
     }, pageChangingDelay);
   }
@@ -28,7 +28,7 @@ $("#nav-recyclable").on("click", function () {
     pageChanging = true
     recyclablePageChage();
     navItemActive($(this));
-    setTimeout(function () {
+    setTimeout(() => {
       pageChanging = false;
     }, pageChangingDelay);
   }
@@ -38,7 +38,7 @@ $("#nav-play").on("click", function () {
     pageChanging = true
     homePageChage();
     navItemActive($(this));
-    setTimeout(function () {
+    setTimeout(() => {
       pageChanging = false;
     }, pageChangingDelay);
   }
@@ -57,18 +57,21 @@ function navItemActive($navItem) {
 
 /******************** Home and Recyclable page switching functions *******************/
 
-// Change the layout to recyclable page
-function recyclablePageChage() {
-  moveItemShowcase_recyclable();
-  moveSearchBar_recyclable(revealItemList);
-  moveBins_recyclable();
-};
-
 // Change the layout to home page
 function homePageChage() {
   moveItemShowcase_home();
   hideItemList(moveSearchBar_home);
   moveBins_home();
+};
+
+// Change the layout to recyclable page
+function recyclablePageChage() {
+  moveItemShowcase_recyclable();
+  moveSearchBar_recyclable(revealItemList);
+  moveBins_recyclable();
+  setTimeout(() => {
+    assignBinAnimation();
+  }, 800);
 };
 
 /**************** Home and Recyclable page switching functions animations ****************/
@@ -104,7 +107,6 @@ function moveSearchBar_recyclable(callback) {
     width: "300px",
     margin: "0"
   }, 400, () => {
-
     callback();
   })
 };
@@ -113,8 +115,8 @@ function moveSearchBar_recyclable(callback) {
 function moveItemShowcase_home() {
   var $item = $(".currentItem").fadeOut(400, function () {
     $item.remove();
-    $mysteryItemsWrapper.children().not('.currentItem').fadeIn(400);
   });
+  $mysteryItemsWrapper.children().not('.currentItem').fadeIn(400);
 };
 
 // Move item showcase to recyclable page position
@@ -123,7 +125,7 @@ function moveItemShowcase_recyclable() {
 
   // Clone the item in the middle of item showcase, cover it on the same position
   var $item = $allMysteryItems.eq(midItemIndex).clone();
-  $item.attr("id", `${$item.attr("src").split("/")[1]}`);
+  $item.attr("id", `${$item.attr("src").split("/")[2]}`);
   $item.removeClass('mystery-item');
   $item.addClass('currentItem')
   $item.css({
@@ -134,6 +136,7 @@ function moveItemShowcase_recyclable() {
     "top": $midItemPosition.top,
     "left": $midItemPosition.left
   })
+
   $mysteryItemsWrapper.prepend($item);
 
   // Hide the item showcase and move the cloned item
@@ -150,8 +153,9 @@ function moveItemShowcase_recyclable() {
 function moveBins_home() {
   $bins.animate({
     left: "0",
-    top: "0"
-  }, 400)
+    top: "0",
+    width: "500px"
+  }, 500)
 }
 
 // Move bins to recyclable page position
@@ -166,12 +170,16 @@ function moveBins_recyclable() {
 
   $bins.animate({
     left: "+=" + $pageWrapper.width() * 0.1,
-    top: "+=" + verticalMovement
+    top: "+=" + verticalMovement,
+    width: "630px"
   }, 500)
 }
 
 // Show item list on the side
 function revealItemList() {
+  let id = $('.currentItem').attr('id');
+  $('.currentSelectedItem').removeClass('currentSelectedItem');
+  $(`#${id}-list`).addClass('currentSelectedItem');
   $itemList.slideDown(400);
 }
 
@@ -206,7 +214,7 @@ function creatItemList() {
     $unorderList.append(`<li id='${item}-list'>${item.split("_").join(" ")}</li>`);
   }
 
-  let middleItemName = $allMysteryItems.eq(midItemIndex).attr("src").split("/")[1];
+  let middleItemName = $allMysteryItems.eq(midItemIndex).attr("src").split("/")[2];
   $("#" + middleItemName + "-list").addClass("currentSelectedItem");
 
   setItemListListener();
@@ -315,15 +323,74 @@ function firstItemToLast() {
   });
 }
 
+// Add a limit on how often a function can be called
 function throttle(callback, limit) {
   var wait = false;
   return function () {
     if (!wait) {
       callback.call();
       wait = true;
-      setTimeout(function () {
+      setTimeout(() => {
         wait = false;
       }, limit);
     }
   }
 }
+
+/**************************** Recyables animation *******************************/
+
+function assignBinAnimation() {
+  let $currentItem = $('.currentItem');
+  let itemID = $currentItem.attr('id');
+  let partsInfo = Object.entries(fullItemList[itemID]);
+
+  if (partsInfo.length > 1) {
+    let srcArray = $currentItem.attr('src').split('/');
+    srcArray.pop()
+    let src = srcArray.join('/') + '/';
+    for (const [item, bin] of partsInfo) {
+      let $itemPart = $currentItem.clone();
+      $itemPart.attr('src', src + item + '.png');
+      $itemPart.addClass('part');
+      $itemPart.hide();
+      $mysteryItemsWrapper.append($itemPart);
+      setTimeout(() => {
+        moveToBin($itemPart, bin);
+      }, 800);
+    }
+    $currentItem.animate({
+      opacity: '0'
+    }, 200, () => {
+      $('.part').fadeIn(300);
+    });
+
+  } else {
+    moveToBin($currentItem, partsInfo[0][1]);
+  }
+}
+
+function moveToBin($item, typeOfBin) {
+  var binOffset = $(`#${typeOfBin}_bin`).offset();
+  var itemOffset = $item.offset();
+  var randomAngle = (Math.random() - 0.5) * 80;
+  $item.animate({
+    top: "+=" + (binOffset.top - itemOffset.top - 110),
+    left: "+=" + (binOffset.left - itemOffset.left - 25),
+  }, 1100);
+  $item.animateRotate(randomAngle, 1000);
+}
+
+// jQuery plugin for object rotation
+$.fn.animateRotate = function (angle, duration, easing, complete) {
+  var args = $.speed(duration, easing, complete);
+  var step = args.step;
+  return this.each(function (i, e) {
+    args.complete = $.proxy(args.complete, e);
+    args.step = function (now) {
+      $.style(e, 'transform', 'rotate(' + now + 'deg)');
+      if (step) return step.apply(e, arguments);
+    };
+
+    $({ deg: 0 }).animate({ deg: angle }, args);
+  });
+};

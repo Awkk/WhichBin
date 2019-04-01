@@ -4,6 +4,7 @@
 <head>
   <meta charset='utf-8'>
   <link rel="stylesheet" type="text/css" href="index.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
   <title>Which Bin?</title>
   <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase.js"></script>
   <script>
@@ -65,12 +66,16 @@
         </form>
       </div>
       <div id="bins-container">
-        <img id="bins" src="img/bins.png" alt="bins">
+        <div class="bin" id="recycling_bin"><img src="img/bins/recyclable_bin.png" alt="reclclable bin"></div>
+        <div class="bin" id="paper_bin"><img src="img/bins/paper_bin.png" alt="reclclable bin"></div>
+        <div class="bin" id="composting_bin"><img src="img/bins/organics_bin.png" alt="reclclable bin"></div>
+        <div class="bin" id="garbage_bin"><img src="img/bins/garbage_bin.png" alt="reclclable bin"></div>
       </div>
     </div>
   </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <script type="text/javascript" src="index.js"></script>
 
 </body>
