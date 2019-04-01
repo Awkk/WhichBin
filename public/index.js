@@ -364,6 +364,7 @@ function assignBinAnimation() {
       $('.part').fadeIn(300);
     });
 
+
   } else {
     moveToBin($currentItem, partsInfo[0][1]);
   }
@@ -377,7 +378,9 @@ function moveToBin($item, typeOfBin) {
     top: "+=" + (binOffset.top - itemOffset.top - 110),
     left: "+=" + (binOffset.left - itemOffset.left - 25),
   }, 1100);
-  $item.animateRotate(randomAngle, 1000);
+  $item.animateRotate(randomAngle, 1000, () => {
+    $(`#${typeOfBin}_bin`).effect('shake', { times: 4, distance: 8 });
+  });
 }
 
 // jQuery plugin for object rotation
