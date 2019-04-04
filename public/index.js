@@ -287,6 +287,7 @@ $("#left-arrow").on("click", throttle(moveToPreviousItem, 250));
 $("#right-arrow").on("click", throttle(moveToNextItem, 250));
 
 $($allMysteryItems).on('click', () => {
+  navItemActive($("#nav-recyclable"));
   recyclablePageChage();
 })
 
