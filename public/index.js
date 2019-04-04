@@ -113,8 +113,8 @@ function moveSearchBar_recyclable(callback) {
 
 // Move item showcase to home page position
 function moveItemShowcase_home() {
-  var $item = $(".currentItem").fadeOut(400, function () {
-    $item.remove();
+  $(".currentItem").fadeOut(400, function () {
+    $(this).remove();
   });
   $mysteryItemsWrapper.children().not('.currentItem').fadeIn(400);
 };
@@ -123,20 +123,7 @@ function moveItemShowcase_home() {
 function moveItemShowcase_recyclable() {
   $midItemPosition = $allMysteryItems.eq(midItemIndex).position();
 
-  // Clone the item in the middle of item showcase, cover it on the same position
-  var $item = $allMysteryItems.eq(midItemIndex).clone();
-  $item.attr("id", `${$item.attr("src").split("/")[2]}`);
-  $item.removeClass('mystery-item');
-  $item.addClass('currentItem')
-  $item.css({
-    "position": "absolute",
-    "width": "220px",
-    "animation": "none",
-    "filter": "none",
-    "top": $midItemPosition.top,
-    "left": $midItemPosition.left
-  })
-
+  var $item = createCurrentItem();
   $mysteryItemsWrapper.prepend($item);
 
   // Hide the item showcase and move the cloned item
@@ -148,6 +135,23 @@ function moveItemShowcase_recyclable() {
     width: "180px"
   }, 500)
 };
+
+// Clone the item in the middle of item showcase, cover it on the same position
+function createCurrentItem() {
+  var $item = $allMysteryItems.eq(midItemIndex).clone();
+  $item.attr("id", `${$item.attr("src").split("/")[2]}`);
+  $item.removeClass('mystery-item');
+  $item.addClass('currentItem')
+  $item.css({
+    "position": "absolute",
+    "width": "180px",
+    "animation": "none",
+    "filter": "none",
+    "top": $midItemPosition.top,
+    "left": $midItemPosition.left
+  })
+  return $item;
+}
 
 // Move bins to home page position
 function moveBins_home() {
@@ -194,6 +198,50 @@ var fullItemList;
 // Get the item list ready when page loaded
 retrieveItems();
 
+// Set on click listener for each item in the list
+function setItemListListener() {
+  $("#item-list-container li").on("click", function () {
+    $('.currentItem').stop();
+    $('.bin').stop();
+    $(".currentSelectedItem").removeClass("currentSelectedItem");
+    $(this).addClass("currentSelectedItem");
+
+    $(".currentItem").fadeOut(400, function () {
+      $(this).remove();
+    });
+
+    let itemID = $(this).attr('id').split('-')[0];
+    let itemSrc = `img/recyclables/${itemID}/${itemID}.png`;
+    var itemExist = UrlExists(itemSrc);
+    if (!itemExist) {
+      itemID = 'coffee_cup';
+      itemSrc = `img/recyclables/${itemID}/${itemID}.png`;
+    };
+
+    var $item = createCurrentItem();
+
+    $item.attr('src', itemSrc);
+    $item.attr('id', itemID);
+
+    $item.css({
+      "left": "+=" + $pageWrapper.width() * 0.1,
+      "top": "+=50px",
+      "width": "180px"
+    })
+    $mysteryItemsWrapper.prepend($item);
+    $item.hide().fadeIn(500, () => {
+      assignBinAnimation();
+    });
+  })
+}
+
+function UrlExists(url) {
+  var http = new XMLHttpRequest();
+  http.open('HEAD', url, false);
+  http.send();
+  return http.status != 404;
+}
+
 // Get all items from firebase create the item list
 function retrieveItems() {
   firebase.database().ref("recyclables").once("value", snap => {
@@ -219,15 +267,6 @@ function creatItemList() {
 
   setItemListListener();
 }
-
-// Set on click listener for each item in the list
-function setItemListListener() {
-  $("#item-list-container li").on("click", function () {
-    $(".currentSelectedItem").removeClass("currentSelectedItem");
-    $(this).addClass("currentSelectedItem");
-  })
-}
-
 
 /*************************** mysteryItem functions ******************************/
 
@@ -364,7 +403,6 @@ function assignBinAnimation() {
       $('.part').fadeIn(300);
     });
 
-
   } else {
     moveToBin($currentItem, partsInfo[0][1]);
   }
@@ -373,10 +411,12 @@ function assignBinAnimation() {
 function moveToBin($item, typeOfBin) {
   var binOffset = $(`#${typeOfBin}_bin`).offset();
   var itemOffset = $item.offset();
-  var randomAngle = (Math.random() - 0.5) * 80;
+  var randomAngle = (Math.random() - 0.5) * 100;
+  var randomTop = Math.random() * 40 + 100;
+  var randomLeft = Math.random() * 50 + 10;
   $item.animate({
-    top: "+=" + (binOffset.top - itemOffset.top - 110),
-    left: "+=" + (binOffset.left - itemOffset.left - 25),
+    top: "+=" + (binOffset.top - itemOffset.top - randomTop),
+    left: "+=" + (binOffset.left - itemOffset.left - randomLeft),
   }, 1100);
   $item.animateRotate(randomAngle, 1000, () => {
     $(`#${typeOfBin}_bin`).effect('shake', { times: 4, distance: 8 });
