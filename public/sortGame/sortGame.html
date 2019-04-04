@@ -5,18 +5,17 @@
     <link rel='stylesheet' type='text/css' href='sortGameCSS.css'>
   </head>
   <body>
-    <!--
-      nav stuff goes here....
-    -->
-    <div class="style" id="instructions">
+    
+    <dialog>
       <ol>
-        <li>Click and drag to ready the catapult.</li>
+        <li>Click and drag to ready the sling-shot.</li>
         <li>Aim to shoot the recyclable into the proper bin.</li>
         <li>Release and launch.</li>
       </ol>
       <p>Have Fun!</p>
-    </div>
-    <button class="style" id="howToPlay">How to Play</button>
+      <button onclick="closeDialog()"></button>
+    </dialog>
+    <button class="style" id="howToPlay" onclick="openDialog()">info</button>
 
 
 
