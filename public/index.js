@@ -286,6 +286,10 @@ $("#left-arrow").on("click", throttle(moveToPreviousItem, 250));
 // Set click listener on right arrow
 $("#right-arrow").on("click", throttle(moveToNextItem, 250));
 
+$($allMysteryItems).on('click', () => {
+  recyclablePageChage();
+})
+
 // Move the middle item of item showcase to the previous one
 function moveToPreviousItem() {
   midItemIndex -= 1;
