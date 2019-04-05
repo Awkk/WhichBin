@@ -212,12 +212,6 @@ function setItemListListener() {
 
     let itemID = $(this).attr('id').split('-')[0];
     let itemSrc = `img/recyclables/${itemID}/${itemID}.png`;
-    var itemExist = UrlExists(itemSrc);
-    if (!itemExist) {
-      itemID = 'coffee_cup';
-      itemSrc = `img/recyclables/${itemID}/${itemID}.png`;
-    };
-
     var $item = createCurrentItem();
 
     $item.attr('src', itemSrc);
@@ -226,20 +220,13 @@ function setItemListListener() {
     $item.css({
       "left": "+=" + $pageWrapper.width() * 0.1,
       "top": "+=50px",
-      "width": "180px"
+      "width": "130px"
     })
     $mysteryItemsWrapper.prepend($item);
     $item.hide().fadeIn(500, () => {
       assignBinAnimation();
     });
   })
-}
-
-function UrlExists(url) {
-  var http = new XMLHttpRequest();
-  http.open('HEAD', url, false);
-  http.send();
-  return http.status != 404;
 }
 
 // Get all items from firebase create the item list
@@ -416,16 +403,20 @@ function assignBinAnimation() {
 function moveToBin($item, typeOfBin) {
   var binOffset = $(`#${typeOfBin}_bin`).offset();
   var itemOffset = $item.offset();
-  var randomAngle = (Math.random() - 0.5) * 100;
+  var randomAngle = (Math.random() - 0.5) * 80;
   var randomTop = Math.random() * 40 + 100;
-  var randomLeft = Math.random() * 50 + 10;
+  let randomLeft = Math.random() * 30 + 10;
+
+  if ($item.attr('src').split('/')[3] == 'lid.png') {
+    randomTop -= 70;
+    randomAngle = Math.random() * 50;;
+  }
+
   $item.animate({
     top: "+=" + (binOffset.top - itemOffset.top - randomTop),
     left: "+=" + (binOffset.left - itemOffset.left - randomLeft),
   }, 1100);
-  $item.animateRotate(randomAngle, 1000, () => {
-    $(`#${typeOfBin}_bin`).effect('shake', { times: 4, distance: 8 });
-  });
+  $item.animateRotate(randomAngle, 1000);
 }
 
 // jQuery plugin for object rotation
