@@ -6,7 +6,7 @@ const pageChangingDelay = 800;
 $("#nav-logo").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
     pageChanging = true
-    homePageChage();
+    homePageChange();
     navItemActive($(this));
     setTimeout(() => {
       pageChanging = false;
@@ -16,7 +16,7 @@ $("#nav-logo").on("click", function () {
 $("#nav-home").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
     pageChanging = true
-    homePageChage();
+    homePageChange();
     navItemActive($(this));
     setTimeout(() => {
       pageChanging = false;
@@ -26,7 +26,7 @@ $("#nav-home").on("click", function () {
 $("#nav-recyclable").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
     pageChanging = true
-    recyclablePageChage();
+    recyclablePageChange();
     navItemActive($(this));
     setTimeout(() => {
       pageChanging = false;
@@ -36,7 +36,7 @@ $("#nav-recyclable").on("click", function () {
 $("#nav-play").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
     pageChanging = true
-    homePageChage();
+    playPageChange();
     navItemActive($(this));
     setTimeout(() => {
       pageChanging = false;
@@ -58,20 +58,26 @@ function navItemActive($navItem) {
 /******************** Home and Recyclable page switching functions *******************/
 
 // Change the layout to home page
-function homePageChage() {
+function homePageChange() {
   moveItemShowcase_home();
   hideItemList(moveSearchBar_home);
   moveBins_home();
 };
 
 // Change the layout to recyclable page
-function recyclablePageChage() {
+function recyclablePageChange() {
   moveItemShowcase_recyclable();
   moveSearchBar_recyclable(revealItemList);
   moveBins_recyclable();
   setTimeout(() => {
     assignBinAnimation();
   }, 800);
+};
+
+// Change the layout to Play page
+function playPageChange() {
+  moveItemShowcase_play();
+  hideThingsForPlayPage();
 };
 
 /**************** Home and Recyclable page switching functions animations ****************/
@@ -192,6 +198,39 @@ function hideItemList(callback) {
   $itemList.slideUp(400, () => { callback() });
 }
 
+/***************************** Play page switching *********************************/
+
+// Hide item list, search bar, and mystery items for Play page
+function hideThingsForPlayPage(callback) {
+  hideItemList(() => {
+    $searchBar.fadeOut(400);
+  });
+}
+
+function moveItemShowcase_play() {
+  // $(".currentItem").fadeOut(400, function () {
+  //   $(this).remove();
+  // });
+
+  $midItemPosition = $allMysteryItems.eq(midItemIndex).position();
+
+  $item = createCurrentItem();
+  $item.attr("id", "draggableItem");
+
+  $mysteryItemsWrapper.prepend($item);
+
+  // Hide the item showcase and move the cloned item
+  $mysteryItemsWrapper.children().not('.currentItem').hide();
+}
+
+/**************************** Play page Game functions ************************/
+
+// Allows item with Id to be dragged.
+$(function() {
+  $("#draggableItem").draggable();
+});
+
+
 /*************************** Item List functions **********************************/
 var fullItemList;
 
@@ -275,7 +314,7 @@ $("#right-arrow").on("click", throttle(moveToNextItem, 250));
 
 $($allMysteryItems).on('click', () => {
   navItemActive($("#nav-recyclable"));
-  recyclablePageChage();
+  recyclablePageChange();
 })
 
 // Move the middle item of item showcase to the previous one
