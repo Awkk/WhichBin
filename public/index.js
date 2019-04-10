@@ -79,7 +79,7 @@ function recyclablePageChange() {
 // Change the layout to Play page
 function playPageChange() {
   hideThingsForPlayPage();
-  moveBins_play();
+  // moveBins_play();
 };
 
 /**************** Home and Recyclable page switching functions animations ****************/
