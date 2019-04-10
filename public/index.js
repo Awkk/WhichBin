@@ -5,7 +5,8 @@ const pageChangingDelay = 800;
 // Set click event listener for nav elements
 $("#nav-logo").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
-    pageChanging = true
+    pageChanging = true;
+    clearTimeout(timeout);
     homePageChange();
     navItemActive($(this));
     setTimeout(() => {
@@ -15,7 +16,8 @@ $("#nav-logo").on("click", function () {
 })
 $("#nav-home").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
-    pageChanging = true
+    pageChanging = true;
+    clearTimeout(timeout);
     homePageChange();
     navItemActive($(this));
     setTimeout(() => {
@@ -25,7 +27,8 @@ $("#nav-home").on("click", function () {
 })
 $("#nav-recyclable").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
-    pageChanging = true
+    pageChanging = true;
+    clearTimeout(timeout);
     recyclablePageChange();
     navItemActive($(this));
     setTimeout(() => {
@@ -35,7 +38,8 @@ $("#nav-recyclable").on("click", function () {
 })
 $("#nav-play").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
-    pageChanging = true
+    pageChanging = true;
+    clearTimeout(timeout);
     playPageChange();
     navItemActive($(this));
     setTimeout(() => {
@@ -69,15 +73,13 @@ function recyclablePageChange() {
   moveItemShowcase_recyclable();
   moveSearchBar_recyclable(revealItemList);
   moveBins_recyclable();
-  setTimeout(() => {
-    assignBinAnimation();
-  }, 800);
+  setTimeout(() => assignBinAnimation(), 800);
 };
 
 // Change the layout to Play page
 function playPageChange() {
-  moveItemShowcase_play();
   hideThingsForPlayPage();
+  moveBins_play();
 };
 
 /**************** Home and Recyclable page switching functions animations ****************/
@@ -102,6 +104,25 @@ function moveSearchBar_home() {
   }, 400)
 };
 
+// Move item showcase to home page position
+function moveItemShowcase_home() {
+  $(".currentItem").fadeOut(400, function () {
+    $(this).remove();
+  });
+  $mysteryItemsWrapper.children().not('.currentItem').fadeIn(400);
+};
+
+// Move bins to home page position
+function moveBins_home() {
+  $bins.animate({
+    left: "0",
+    top: "0",
+    width: "500px"
+  }, 500)
+}
+
+/***************************** Recyclable page switching *********************************/
+
 // Move search bar to recyclable page position
 function moveSearchBar_recyclable(callback) {
   var offset = $searchBar.offset();
@@ -113,16 +134,10 @@ function moveSearchBar_recyclable(callback) {
     width: "300px",
     margin: "0"
   }, 400, () => {
-    callback();
+    if (typeof callback === "function") {
+      callback();
+    }
   })
-};
-
-// Move item showcase to home page position
-function moveItemShowcase_home() {
-  $(".currentItem").fadeOut(400, function () {
-    $(this).remove();
-  });
-  $mysteryItemsWrapper.children().not('.currentItem').fadeIn(400);
 };
 
 // Move item showcase to recyclable page position
@@ -138,7 +153,7 @@ function moveItemShowcase_recyclable() {
   $item.animate({
     left: "+=" + $pageWrapper.width() * 0.1,
     top: "+=50px",
-    width: "180px"
+    width: "150px"
   }, 500)
 };
 
@@ -150,22 +165,13 @@ function createCurrentItem() {
   $item.addClass('currentItem')
   $item.css({
     "position": "absolute",
-    "width": "180px",
+    "width": "220px",
     "animation": "none",
     "filter": "none",
     "top": $midItemPosition.top,
     "left": $midItemPosition.left
   })
   return $item;
-}
-
-// Move bins to home page position
-function moveBins_home() {
-  $bins.animate({
-    left: "0",
-    top: "0",
-    width: "500px"
-  }, 500)
 }
 
 // Move bins to recyclable page position
@@ -185,6 +191,7 @@ function moveBins_recyclable() {
   }, 500)
 }
 
+
 // Show item list on the side
 function revealItemList() {
   let id = $('.currentItem').attr('id');
@@ -195,16 +202,32 @@ function revealItemList() {
 
 // Hide item list on the side
 function hideItemList(callback) {
-  $itemList.slideUp(400, () => { callback() });
+  $itemList.slideUp(400, () => {
+    if (typeof callback === "function") {
+      callback()
+    }
+  });
 }
 
 /***************************** Play page switching *********************************/
 
 // Hide item list, search bar, and mystery items for Play page
 function hideThingsForPlayPage(callback) {
-  hideItemList(() => {
-    $searchBar.fadeOut(400);
+
+  $mysteryItemsWrapper.fadeTo(400, 0, () => {
+    $mysteryItemsWrapper.css('visibility', 'hidden');
   });
+  $searchBar.fadeTo(400, 0, () => {
+    $searchBar.css('visibility', 'hidden');
+  });
+  $itemList.fadeTo(400, 0, () => {
+    $itemList.css('visibility', 'hidden');
+  });
+
+  $(".currentItem").fadeOut(400, function () {
+    $(this).remove();
+  });
+  hideItemList();
 }
 
 function moveItemShowcase_play() {
@@ -223,10 +246,27 @@ function moveItemShowcase_play() {
   $mysteryItemsWrapper.children().not('.currentItem').hide();
 }
 
+// Move bins to recyclable page position
+function moveBins_play() {
+  var offset = $bins.offset();
+
+  let verticalMovement = $(window).height() - offset.top - $bins.height() - 50;
+
+  if (verticalMovement < 0) {
+    verticalMovement = 100;
+  }
+
+  $bins.animate({
+    left: "+=" + $pageWrapper.width() * 0.1,
+    top: "+=" + verticalMovement,
+    width: "630px"
+  }, 500)
+}
+
 /**************************** Play page Game functions ************************/
 
 // Allows item with Id to be dragged.
-$(function() {
+$(function () {
   $("#draggableItem").draggable();
 });
 
@@ -240,6 +280,8 @@ retrieveItems();
 // Set on click listener for each item in the list
 function setItemListListener() {
   $("#item-list-container li").on("click", function () {
+
+    clearTimeout(timeout);
     $('.currentItem').stop();
     $('.bin').stop();
     $(".currentSelectedItem").removeClass("currentSelectedItem");
@@ -262,7 +304,7 @@ function setItemListListener() {
       "width": "130px"
     })
     $mysteryItemsWrapper.prepend($item);
-    $item.hide().fadeIn(500, () => {
+    $item.hide().fadeIn(400, () => {
       assignBinAnimation();
     });
   })
@@ -408,6 +450,7 @@ function throttle(callback, limit) {
 }
 
 /**************************** Recyables animation *******************************/
+var timeout;
 
 function assignBinAnimation() {
   let $currentItem = $('.currentItem');
@@ -416,7 +459,7 @@ function assignBinAnimation() {
 
   if (partsInfo.length > 1) {
     let srcArray = $currentItem.attr('src').split('/');
-    srcArray.pop()
+    srcArray.pop();
     let src = srcArray.join('/') + '/';
     for (const [item, bin] of partsInfo) {
       let $itemPart = $currentItem.clone();
@@ -425,21 +468,26 @@ function assignBinAnimation() {
       $itemPart.hide();
       $mysteryItemsWrapper.append($itemPart);
       setTimeout(() => {
-        moveToBin($itemPart, bin);
-      }, 800);
+        moveToBin($itemPart, bin, () => {
+          timeout = setTimeout(() => {
+            $(`#${itemID}-list`).click();
+          }, 1800);
+        });
+      }, 300);
     }
-    $currentItem.animate({
-      opacity: '0'
-    }, 200, () => {
-      $('.part').fadeIn(300);
-    });
+    $currentItem.css({ opacity: '0' });
+    $('.part').show();
 
   } else {
-    moveToBin($currentItem, partsInfo[0][1]);
+    moveToBin($currentItem, partsInfo[0][1], () => {
+      timeout = setTimeout(() => {
+        $(`#${itemID}-list`).click();
+      }, 1800);
+    });
   }
 }
 
-function moveToBin($item, typeOfBin) {
+function moveToBin($item, typeOfBin, callback) {
   var binOffset = $(`#${typeOfBin}_bin`).offset();
   var itemOffset = $item.offset();
   var randomAngle = (Math.random() - 0.5) * 80;
@@ -454,8 +502,12 @@ function moveToBin($item, typeOfBin) {
   $item.animate({
     top: "+=" + (binOffset.top - itemOffset.top - randomTop),
     left: "+=" + (binOffset.left - itemOffset.left - randomLeft),
-  }, 1100);
-  $item.animateRotate(randomAngle, 1000);
+  }, 1200, () => {
+    if (typeof callback === "function") {
+      callback()
+    }
+  });
+  $item.animateRotate(randomAngle, 900);
 }
 
 // jQuery plugin for object rotation
