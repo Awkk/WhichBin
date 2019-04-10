@@ -6,7 +6,7 @@ const pageChangingDelay = 800;
 $("#nav-logo").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
     pageChanging = true;
-    clearTimeout(timeout);
+    timeout.forEach(clearTimeout);
     homePageChange();
     navItemActive($(this));
     setTimeout(() => {
@@ -17,7 +17,7 @@ $("#nav-logo").on("click", function () {
 $("#nav-home").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
     pageChanging = true;
-    clearTimeout(timeout);
+    timeout.forEach(clearTimeout);
     homePageChange();
     navItemActive($(this));
     setTimeout(() => {
@@ -28,7 +28,7 @@ $("#nav-home").on("click", function () {
 $("#nav-recyclable").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
     pageChanging = true;
-    clearTimeout(timeout);
+    timeout.forEach(clearTimeout);
     recyclablePageChange();
     navItemActive($(this));
     setTimeout(() => {
@@ -39,7 +39,7 @@ $("#nav-recyclable").on("click", function () {
 $("#nav-play").on("click", function () {
   if (!$(this).hasClass("active") && !pageChanging) {
     pageChanging = true;
-    clearTimeout(timeout);
+    timeout.forEach(clearTimeout);
     playPageChange();
     navItemActive($(this));
     setTimeout(() => {
@@ -280,8 +280,7 @@ retrieveItems();
 // Set on click listener for each item in the list
 function setItemListListener() {
   $("#item-list-container li").on("click", function () {
-
-    clearTimeout(timeout);
+    timeout.forEach(clearTimeout);
     $('.currentItem').stop();
     $('.bin').stop();
     $(".currentSelectedItem").removeClass("currentSelectedItem");
@@ -450,7 +449,7 @@ function throttle(callback, limit) {
 }
 
 /**************************** Recyables animation *******************************/
-var timeout;
+var timeout = [];
 
 function assignBinAnimation() {
   let $currentItem = $('.currentItem');
@@ -467,23 +466,25 @@ function assignBinAnimation() {
       $itemPart.addClass('part');
       $itemPart.hide();
       $mysteryItemsWrapper.append($itemPart);
-      setTimeout(() => {
+      timeout.push(setTimeout(() => {
         moveToBin($itemPart, bin, () => {
-          timeout = setTimeout(() => {
+          timeout.push(setTimeout(() => {
             $(`#${itemID}-list`).click();
-          }, 1800);
+          }, 1800));
         });
-      }, 300);
+      }, 600))
     }
     $currentItem.css({ opacity: '0' });
     $('.part').show();
 
   } else {
-    moveToBin($currentItem, partsInfo[0][1], () => {
-      timeout = setTimeout(() => {
-        $(`#${itemID}-list`).click();
-      }, 1800);
-    });
+    timeout.push(setTimeout(() => {
+      moveToBin($currentItem, partsInfo[0][1], () => {
+        timeout.push(setTimeout(() => {
+          $(`#${itemID}-list`).click();
+        }, 1800));
+      });
+    }, 600));
   }
 }
 
