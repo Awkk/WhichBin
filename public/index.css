@@ -73,6 +73,7 @@ nav ul li a {
 /******************** Content *********************/
 
 #content-wrapper {
+  width: 100%;
   padding-top: 40px;
   position: relative;
 }
@@ -335,4 +336,41 @@ button span:before, button span:after {
   to {
     margin-left: 20px;
   }
+}
+
+/********************** Play page ***************************/
+
+#score {
+  padding-top: 25px;
+  position: absolute;
+  width: 100vw;
+  max-width: 1300px;
+  font-family: 'Abel', cursive;
+  font-size: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+#result {
+  position: absolute;
+  width: 100vw;
+  max-width: 1300px;
+  z-index: 1;
+  top: 130px;
+  display: flex;
+  justify-content: center;
+  font-family: 'Abel', cursive;
+  font-size: 20px;
+
+}
+
+#result div {
+  background: rgb(238, 238, 238);
+  box-shadow: 0 0 3px rgb(141, 141, 141);
+  width: 300px;
+  height: 300px;
+}
+
+#result p {
+  text-align: center;
 }
