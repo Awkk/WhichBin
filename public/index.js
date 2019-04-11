@@ -63,6 +63,11 @@ function navItemActive($navItem) {
 
 // Change the layout to home page
 function homePageChange() {
+  $('.gameItem').fadeOut(400, () => $(this).remove());
+  $mysteryItemsWrapper.css('visibility', 'visible');
+  $mysteryItemsWrapper.fadeTo(400, 1);
+  $searchBar.css('visibility', 'visible');
+  $searchBar.fadeTo(400, 1);
   moveItemShowcase_home();
   hideItemList(moveSearchBar_home);
   moveBins_home();
@@ -70,19 +75,23 @@ function homePageChange() {
 
 // Change the layout to recyclable page
 function recyclablePageChange() {
+  $('.gameItem').fadeOut(400, () => $(this).remove());
+  showHiddenThings();
   moveItemShowcase_recyclable();
   moveSearchBar_recyclable(revealItemList);
   moveBins_recyclable();
-  setTimeout(() => assignBinAnimation(), 800);
+  timeout.push(setTimeout(() => assignBinAnimation(), 800));
 };
 
 // Change the layout to Play page
 function playPageChange() {
-  hideThingsForPlayPage();
-  // moveBins_play();
+  hideThingsForPlayPage(moveItemShowcase_home);
+  moveBins_play();
+  showRandomItem();
+  setBinsListener();
 };
 
-/**************** Home and Recyclable page switching functions animations ****************/
+/******************************* Home page switching  *********************************/
 
 var $searchBar = $("#search-container");
 var $mysteryItemsWrapper = $("#mystery-item-wrapper");
@@ -127,9 +136,17 @@ function moveBins_home() {
 function moveSearchBar_recyclable(callback) {
   var offset = $searchBar.offset();
 
+  var left = 20;
+  var top = $("nav").height() * 0.6 - offset.top;
+
+  if ($('.active').attr("id") == "nav-play") {
+    left = 0;
+    top = 0;
+  }
+
   $searchBar.animate({
-    top: "+=" + ($("nav").height() * 0.6 - offset.top),
-    left: "+=20",
+    top: "+=" + top,
+    left: "+=" + left,
     zoom: "0.7",
     width: "300px",
     margin: "0"
@@ -226,30 +243,24 @@ function hideThingsForPlayPage(callback) {
 
   $(".currentItem").fadeOut(400, function () {
     $(this).remove();
+    if (typeof callback === "function") {
+      callback()
+    }
   });
-  hideItemList();
 }
 
-function moveItemShowcase_play() {
-  // $(".currentItem").fadeOut(400, function () {
-  //   $(this).remove();
-  // });
-
-  $midItemPosition = $allMysteryItems.eq(midItemIndex).position();
-
-  $item = createCurrentItem();
-  $item.attr("id", "draggableItem");
-
-  $mysteryItemsWrapper.prepend($item);
-
-  // Hide the item showcase and move the cloned item
-  $mysteryItemsWrapper.children().not('.currentItem').hide();
+function showHiddenThings() {
+  $mysteryItemsWrapper.css('visibility', 'visible');
+  $mysteryItemsWrapper.fadeTo(400, 1);
+  $searchBar.css('visibility', 'visible');
+  $searchBar.fadeTo(400, 1);
+  $itemList.css('visibility', 'visible');
+  $itemList.fadeTo(400, 1);
 }
 
 // Move bins to recyclable page position
 function moveBins_play() {
   var offset = $bins.offset();
-
   let verticalMovement = $(window).height() - offset.top - $bins.height() - 50;
 
   if (verticalMovement < 0) {
@@ -257,18 +268,50 @@ function moveBins_play() {
   }
 
   $bins.animate({
-    left: "+=" + $pageWrapper.width() * 0.1,
+    left: "0",
     top: "+=" + verticalMovement,
     width: "630px"
   }, 500)
 }
 
-/**************************** Play page Game functions ************************/
+function setBinsListener() {
 
-// Allows item with Id to be dragged.
-$(function () {
-  $("#draggableItem").draggable();
-});
+}
+
+
+
+/**************************** Play page Game functions ************************/
+var correctAnswer;
+
+function showRandomItem() {
+  var $item = $allMysteryItems.eq(midItemIndex).clone();
+
+
+  $item.attr('id', 'plastic_bottle');
+  $item.attr('src', 'img/recyclables/plastic_bottle/bottle.png')
+  $item.removeClass('mystery-item');
+  $item.addClass('gameItem');
+  $item.css({
+    "position": "absolute",
+    "width": "180px",
+    "animation": "none",
+    "filter": "none",
+    "visibility": "visible",
+    "left": ($pageWrapper.width() / 2 - 90),
+    "top": "+=180"
+  })
+
+  var $itemPart2 = $item.clone();
+  $itemPart2.attr('src', 'img/recyclables/plastic_bottle/lid.png')
+
+
+  $item.hide();
+  $itemPart2.hide();
+  $('nav').after($itemPart2);
+  $('nav').after($item);
+  $item.fadeIn(1500);
+  $itemPart2.fadeIn(1500);
+}
 
 
 /*************************** Item List functions **********************************/
@@ -451,6 +494,7 @@ function throttle(callback, limit) {
 /**************************** Recyables animation *******************************/
 var timeout = [];
 
+
 function assignBinAnimation() {
   let $currentItem = $('.currentItem');
   let itemID = $currentItem.attr('id');
@@ -467,11 +511,13 @@ function assignBinAnimation() {
       $itemPart.hide();
       $mysteryItemsWrapper.append($itemPart);
       timeout.push(setTimeout(() => {
-        moveToBin($itemPart, bin, () => {
-          timeout.push(setTimeout(() => {
-            $(`#${itemID}-list`).click();
-          }, 1800));
-        });
+        if ($('.active').attr('id') == 'nav-recyclable') {
+          moveToBin($itemPart, bin, () => {
+            timeout.push(setTimeout(() => {
+              $(`#${itemID}-list`).click();
+            }, 1800));
+          });
+        }
       }, 600))
     }
     $currentItem.css({ opacity: '0' });
@@ -479,11 +525,13 @@ function assignBinAnimation() {
 
   } else {
     timeout.push(setTimeout(() => {
-      moveToBin($currentItem, partsInfo[0][1], () => {
-        timeout.push(setTimeout(() => {
-          $(`#${itemID}-list`).click();
-        }, 1800));
-      });
+      if ($('.active').attr('id') == 'nav-recyclable') {
+        moveToBin($currentItem, partsInfo[0][1], () => {
+          timeout.push(setTimeout(() => {
+            $(`#${itemID}-list`).click();
+          }, 1800));
+        });
+      }
     }, 600));
   }
 }
