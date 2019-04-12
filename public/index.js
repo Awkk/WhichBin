@@ -409,12 +409,69 @@ function endGame() {
   var $result = $pageWrapper.find('#result');
   $result.hide();
   $result.fadeIn(400);
-}
+  console.log("end");
+
+  $pageWrapper.find('#dbWrite').submit(function (event) {
+    event.preventDefault();
+    sendPlayerInfo();
+  });
+  getLeaderboard();
+};
 
 // Function sends the player's name and score to be stored in Firebase.
 function sendPlayerInfo() {
+  var name = $('#userInput').val();
+  firebase.database().ref(`leaderboard/${totalPlayer + 1}`).update({
+    name: name,
+    score: score
+  })
+    .then(() => {
+      getLeaderboard(showLeaderboard);
+    });
+};
 
-}
+var leaderboard;
+var totalPlayer;
+var allPlayers;
+function getLeaderboard(callback) {
+  firebase.database().ref('leaderboard').once('value').then(snap => {
+    leaderboard = snap.val();
+    totalPlayer = Object.keys(leaderboard).length;
+    allPlayers = Object.values(leaderboard);
+    allPlayers.sort(function compareNumbers(a, b) {
+      return b.score - a.score;
+    });
+    console.log(allPlayers);
+    callback();
+  });
+};
+
+
+
+function showLeaderboard() {
+  var topTen = '';
+  for (let i = 0; i < 10; i++) {
+    var name = allPlayers[i]['name'];
+    var score = allPlayers[i]['score'];
+    topTen += `<p>${i + 1}. ${name}<span>${score}</span></p>`;
+  }
+
+  $('#result').html(`<div id='leaderboard'><h2>Top 10 High Scores</h2>${topTen}<button id='again' type='button'>Play Again!</button></div></div>`);
+
+  $('#result').find('#again').on('click', () => {
+    playAgain();
+  })
+};
+
+function playAgain() {
+  score = 0;
+  showRandomItem();
+  $('.gameItem').remove();
+  $('#score').remove();
+  $('#result').remove();
+  showRandomItem();
+  showScores();
+};
 
 
 
