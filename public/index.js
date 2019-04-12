@@ -400,10 +400,20 @@ function nextGameItem() {
 }
 
 function endGame() {
-  $('nav').after(`<div id="result"><div><br><br><br><p>Good Job!</p><p>Your score is: ${score}</p></div></div>`);
+  $('nav').after(`<div id="result"><div><br><br><p>Good Job!</p><p>Your score is: ${score}</p>
+  <form id="dbWrite">
+    <input id="userInput" type="text" placeholder="Name" required="required" pattern="[a-zA-Z]{2,10}">
+    <input id="submitButton" type="submit">
+  </form>
+  </div></div>`);
   var $result = $pageWrapper.find('#result');
   $result.hide();
   $result.fadeIn(400);
+}
+
+// Function sends the player's name and score to be stored in Firebase.
+function sendPlayerInfo() {
+
 }
 
 
