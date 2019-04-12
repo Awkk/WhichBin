@@ -675,9 +675,11 @@ function assignBinAnimation() {
         timeout.push(setTimeout(() => {
           if ($('.active').attr('id') == 'nav-recyclable') {
             moveToBin($itemPart, bin, () => {
-              timeout.push(setTimeout(() => {
-                $(`#${itemID}-list`).click();
-              }, 1800));
+              if ($('.active').attr('id') == 'nav-recyclable') {
+                timeout.push(setTimeout(() => {
+                  $(`#${itemID}-list`).click();
+                }, 1800));
+              }
             });
           }
         }, 600))
@@ -691,9 +693,11 @@ function assignBinAnimation() {
       timeout.push(setTimeout(() => {
         if ($('.active').attr('id') == 'nav-recyclable') {
           moveToBin($currentItem, partsInfo[0][1], () => {
-            timeout.push(setTimeout(() => {
-              $(`#${itemID}-list`).click();
-            }, 1800));
+            if ($('.active').attr('id') == 'nav-recyclable') {
+              timeout.push(setTimeout(() => {
+                $(`#${itemID}-list`).click();
+              }, 1800));
+            }
           });
         }
       }, 600));
