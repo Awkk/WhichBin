@@ -255,6 +255,7 @@ function hideThingsForPlayPage(callback) {
   });
 }
 
+// Show all hidden elements
 function showHiddenThings() {
   $mysteryItemsWrapper.css('visibility', 'visible');
   $mysteryItemsWrapper.fadeTo(400, 1);
@@ -280,13 +281,16 @@ function moveBins_play() {
   }, 500)
 }
 
+// User score for game page
 var score;
 
+// Show the score on page
 function showScores() {
   score = 0;
   $('nav').after(`<div id='score'><div>Score: ${score}</div></div>`);
 }
 
+// Set on click listener on every bins
 function setBinsListener() {
   $('.bin').css('cursor', 'pointer');
   $('#recycling_bin').on('click', function () {
@@ -339,6 +343,7 @@ function setBinsListener() {
   });
 }
 
+// Remove the listener on all bins
 function removeBinListener() {
   $('.bin').css('cursor', 'auto');
   $('.bin').off('click');
@@ -349,6 +354,7 @@ var correctAnswer;
 var $item;
 var $itemPart2;
 
+// Show random item on game page. Hard codded as plastic bottle and the lid right now.
 function showRandomItem() {
   $item = $allMysteryItems.eq(midItemIndex).clone();
 
@@ -387,6 +393,7 @@ function showRandomItem() {
 }
 
 var lastItem;
+// Show next game item on screen. Hard codded right now.
 function nextGameItem() {
   if (lastItem) {
     endGame();
@@ -399,6 +406,7 @@ function nextGameItem() {
   }
 }
 
+// End the game and show the input field for submiting high score
 function endGame() {
   $('nav').after(`<div id="result"><div><br><br><p>Good Job!</p><p>Your score is: ${score}</p>
   <form id="dbWrite">
@@ -433,6 +441,7 @@ function sendPlayerInfo() {
 var leaderboard;
 var totalPlayer;
 var allPlayers;
+// Get leaderboard from firebase
 function getLeaderboard(callback) {
   firebase.database().ref('leaderboard').once('value').then(snap => {
     leaderboard = snap.val();
@@ -446,8 +455,7 @@ function getLeaderboard(callback) {
   });
 };
 
-
-
+// Show the leaderboard on screen
 function showLeaderboard() {
   var topTen = '';
   for (let i = 0; i < 10; i++) {
@@ -463,6 +471,7 @@ function showLeaderboard() {
   })
 };
 
+// Reset the game page and start the game again
 function playAgain() {
   score = 0;
   showRandomItem();
@@ -472,8 +481,6 @@ function playAgain() {
   showRandomItem();
   showScores();
 };
-
-
 
 /*************************** Item List functions **********************************/
 var fullItemList;
@@ -655,7 +662,7 @@ function throttle(callback, limit) {
 /**************************** Recyables animation *******************************/
 var timeout = [];
 
-
+// Assign animation on the currentItem on screen
 function assignBinAnimation() {
   let $currentItem = $('.currentItem');
   let itemID = $currentItem.attr('id');
@@ -705,6 +712,7 @@ function assignBinAnimation() {
   }
 }
 
+// Animation for moving object to the bin
 function moveToBin($item, typeOfBin, callback) {
   var binOffset = $(`#${typeOfBin}_bin`).offset();
   var itemOffset = $item.offset();
